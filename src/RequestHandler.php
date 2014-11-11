@@ -2,18 +2,18 @@
 
 namespace WhoopsSilex;
 
-use Silex\Application;
+use Pimple\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Whoops\Handler\Handler;
 use Whoops\Handler\PrettyPageHandler;
 
 class RequestHandler extends Handler
 {
-    private $application;
+    private $container;
 
-    public function __construct(Application $application)
+    public function __construct(Container $container)
     {
-        $this->application = $application;
+        $this->container = $container;
     }
 
     /**
@@ -21,20 +21,33 @@ class RequestHandler extends Handler
      */
     public function handle()
     {
-        $app = $this->application;
-
-        $errorPageHandler = $app["whoops.error_page_handler"];
+        $errorPageHandler = $this->container["whoops.error_page_handler"];
         if (!($errorPageHandler instanceof PrettyPageHandler)) {
             return;
         }
 
-        if (!$app->offsetExists('request_stack')) {
+        $request = $this->request();
+
+        if ($request === null) {
             // This error occurred too early in the application's life
             // and the request instance is not yet available.
             return;
         }
 
-        $this->addRequestInfo($app['request_stack']->getCurrentRequest(), $errorPageHandler);
+        $this->addRequestInfo($request, $errorPageHandler);
+    }
+
+    private function request()
+    {
+        $container = $this->container;
+
+        if (!$container->offsetExists('request_stack')) {
+            // This error occurred too early in the application's life
+            // and the request stack instance is not yet available.
+            return;
+        }
+
+        return $container['request_stack']->getCurrentRequest();
     }
 
     private function addRequestInfo(Request $request, PrettyPageHandler $handler)
