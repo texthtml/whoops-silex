@@ -34,7 +34,7 @@ class WhoopsServiceProvider implements ServiceProviderInterface, EventListenerPr
             $dispatcher->addListener(
                 KernelEvents::EXCEPTION,
                 new ExceptionListenerWrapper($container, $container['whoops.exception_handler']),
-                -8
+                -1
             );
         }
     }
