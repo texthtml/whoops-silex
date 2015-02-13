@@ -27,7 +27,7 @@ class SilexApplicationHandler extends Handler
                 'Version'           => $app::VERSION,
                 'Charset'           => $app['charset'],
                 'Route Class'       => $app['route_class'],
-                'Dispatcher Class'  => $app['dispatcher_class'],
+                'Dispatcher Class'  => get_class($app['dispatcher']),
                 'Application Class' => get_class($app),
             ));
         }
