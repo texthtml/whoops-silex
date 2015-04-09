@@ -19,6 +19,7 @@ In your project root folder
 2. In your Silex container configuration, register the WhoopsServiceProvider:
 
 ```php
+use WhoopsSilex\WhoopsServiceProvider;
 $container->register(new WhoopsServiceProvider);
 ```
 
